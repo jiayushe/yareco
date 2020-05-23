@@ -10,25 +10,25 @@ export default class Recorder {
   private inputSampleRate: number;
   private outputSampleRate: number;
   private outputSampleBits: number;
-  private duration: number = 0;
+  private duration: number;
   private littleEdian: boolean = true;
   public onRecord: (duration: number) => void;
 
   public constructor(config: UserConfig = {}) {
     this.numChannels = config.numChannels
       ? [1, 2].indexOf(config.numChannels) >= 0
-        ? config.numChannels!
+        ? config.numChannels
         : 2
       : 2;
-    this.inputSampleRate = new (window.AudioContext || window.webkitAudioContext)().sampleRate;
-    this.outputSampleRate = config.sampleBits
+    this.outputSampleBits = config.sampleBits
       ? [8, 16].indexOf(config.sampleBits) >= 0
-        ? config.sampleBits!
+        ? config.sampleBits
         : 16
       : 16;
-    this.outputSampleBits = config.sampleRate
+    this.inputSampleRate = new (window.AudioContext || window.webkitAudioContext)().sampleRate;
+    this.outputSampleRate = config.sampleRate
       ? [8000, 11025, 16000, 22050, 24000, 44100, 48000].indexOf(config.sampleRate) >= 0
-        ? config.sampleRate!
+        ? config.sampleRate
         : this.inputSampleRate
       : this.inputSampleRate;
     this.littleEdian = (() => {
@@ -130,8 +130,9 @@ export default class Recorder {
     this.audioInput = null;
     this.isRecording = true;
     this.duration = 0;
+    this.buffer = [];
     for (let chan = 0; chan < this.numChannels; chan++) {
-      this.buffer[chan] = { data: [], size: 0 };
+      this.buffer.push({ data: [], size: 0 });
     }
   }
 

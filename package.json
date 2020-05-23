@@ -1,6 +1,6 @@
 {
   "name": "yareco",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "lightweight API wrapper for web audio recording",
   "main": "dist/recorder.js",
   "types": "dist/recorder.d.ts",
@@ -31,10 +31,10 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jiayushe/yarec.git"
+    "url": "git+https://github.com/jiayushe/yareco.git"
   },
   "bugs": {
-    "url": "https://github.com/jiayushe/yarec/issues"
+    "url": "https://github.com/jiayushe/yareco/issues"
   },
-  "homepage": "https://github.com/jiayushe/yarec"
+  "homepage": "https://github.com/jiayushe/yareco"
 }
