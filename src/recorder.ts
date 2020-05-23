@@ -14,23 +14,20 @@ export default class Recorder {
   private littleEdian: boolean = true;
   public onRecord: (duration: number) => void;
 
-  constructor(config: UserConfig = {}) {
+  public constructor(config: UserConfig = {}) {
     this.numChannels = config.numChannels
       ? [1, 2].indexOf(config.numChannels) >= 0
         ? config.numChannels!
         : 2
       : 2;
-    this.inputSampleRate = new (window.AudioContext ||
-      window.webkitAudioContext)().sampleRate;
+    this.inputSampleRate = new (window.AudioContext || window.webkitAudioContext)().sampleRate;
     this.outputSampleRate = config.sampleBits
       ? [8, 16].indexOf(config.sampleBits) >= 0
         ? config.sampleBits!
         : 16
       : 16;
     this.outputSampleBits = config.sampleRate
-      ? [8000, 11025, 16000, 22050, 24000, 44100, 48000].indexOf(
-          config.sampleRate
-        ) >= 0
+      ? [8000, 11025, 16000, 22050, 24000, 44100, 48000].indexOf(config.sampleRate) >= 0
         ? config.sampleRate!
         : this.inputSampleRate
       : this.inputSampleRate;
@@ -42,7 +39,7 @@ export default class Recorder {
     Recorder.initUserMedia();
   }
 
-  async start(): Promise<{}> {
+  public async start(): Promise<{}> {
     this.initRecorder();
     return navigator.mediaDevices
       .getUserMedia({ audio: true })
@@ -57,12 +54,11 @@ export default class Recorder {
       });
   }
 
-  pause(): void {
+  public pause(): void {
     this.isRecording = false;
   }
 
-  resume(position: number = -1): void {
-    this.isRecording = true;
+  public resume(position: number = -1): void {
     if (position >= 0) {
       const targetPos = Math.round(position * this.inputSampleRate);
       const length = this.buffer[0].data.length;
@@ -74,10 +70,7 @@ export default class Recorder {
           const curPos = targetPos - startPos;
           if (curPos < curLength) {
             for (let chan = 0; chan < this.numChannels; chan += 1) {
-              this.buffer[chan].data[i] = this.buffer[chan].data[i].slice(
-                0,
-                curPos
-              );
+              this.buffer[chan].data[i] = this.buffer[chan].data[i].slice(0, curPos);
             }
           }
           for (let chan = 0; chan < this.numChannels; chan += 1) {
@@ -89,22 +82,23 @@ export default class Recorder {
         startPos = endPos;
       }
     }
+    this.isRecording = true;
   }
 
-  stop(): void {
+  public stop(): void {
     this.recorder.disconnect();
     this.analyser.disconnect();
     if (this.audioInput) this.audioInput.disconnect();
   }
 
-  clear(): Promise<{}> {
+  public clear(): Promise<{}> {
     this.clearRecordStatus();
     this.stopStream();
     return this.closeAudioContext();
   }
 
-  exportWAV(): Blob {
-    return new Blob([this.getWAV()], { type: "audio/wav" });
+  public exportWAV(): Blob {
+    return new Blob([this.getWAV()], { type: 'audio/wav' });
   }
 
   private initRecorder(): void {
@@ -113,8 +107,7 @@ export default class Recorder {
     this.analyser = this.context.createAnalyser();
     this.analyser.smoothingTimeConstant = 0.8;
     this.analyser.fftSize = 2048;
-    const scriptProcessor =
-      this.context.createScriptProcessor || this.context.createJavaScriptNode;
+    const scriptProcessor = this.context.createScriptProcessor || this.context.createJavaScriptNode;
     const sampleSize = 4096;
     this.recorder = scriptProcessor.apply(this.context, [
       sampleSize,
@@ -150,7 +143,7 @@ export default class Recorder {
   }
 
   private closeAudioContext(): Promise<{}> {
-    if (this.context && this.context.close && this.context.state !== "closed") {
+    if (this.context && this.context.close && this.context.state !== 'closed') {
       return this.context.close();
     } else {
       return new Promise((resolve: () => any) => {
@@ -178,13 +171,8 @@ export default class Recorder {
 
   private compress(): Float32Array {
     const input = this.getBuffer();
-    const compression = Math.max(
-      this.inputSampleRate / this.outputSampleRate,
-      1
-    );
-    const length = Math.floor(
-      (input[0].length + input[1].length) / compression
-    );
+    const compression = Math.max(this.inputSampleRate / this.outputSampleRate, 1);
+    const length = Math.floor((input[0].length + input[1].length) / compression);
     const output = new Float32Array(length);
     let inputIndex = 0;
     let outputIndex = 0;
@@ -217,11 +205,7 @@ export default class Recorder {
       for (let i = 0; i < input.length; i++, offset += 2) {
         const s = Math.max(-1, Math.min(1, input[i]));
         // 16-bit [-32768, 32767]
-        output.setInt16(
-          offset,
-          s < 0 ? s * 0x8000 : s * 0x7fff,
-          this.littleEdian
-        );
+        output.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7fff, this.littleEdian);
       }
     }
     return output;
@@ -230,9 +214,7 @@ export default class Recorder {
   private getWAV(): DataView {
     const input = this.getPCM();
     const sampleRate =
-      this.outputSampleRate > this.inputSampleRate
-        ? this.inputSampleRate
-        : this.outputSampleRate;
+      this.outputSampleRate > this.inputSampleRate ? this.inputSampleRate : this.outputSampleRate;
     const sampleBits = this.outputSampleBits;
     const channelCount = this.numChannels;
     const buffer = new ArrayBuffer(44 + input.byteLength);
@@ -244,16 +226,16 @@ export default class Recorder {
       }
     };
     /* RIFF identifier */
-    writeString(output, offset, "RIFF");
+    writeString(output, offset, 'RIFF');
     offset += 4;
     /* RIFF chunk length */
     output.setUint32(offset, 36 + input.byteLength, this.littleEdian);
     offset += 4;
     /* RIFF type */
-    writeString(output, offset, "WAVE");
+    writeString(output, offset, 'WAVE');
     offset += 4;
     /* format chunk identifier */
-    writeString(output, offset, "fmt ");
+    writeString(output, offset, 'fmt ');
     offset += 4;
     /* format chunk length */
     output.setUint32(offset, 16, this.littleEdian);
@@ -268,11 +250,7 @@ export default class Recorder {
     output.setUint32(offset, sampleRate, this.littleEdian);
     offset += 4;
     /* byte rate (sample rate * block align) */
-    output.setUint32(
-      offset,
-      channelCount * sampleRate * (sampleBits / 8),
-      this.littleEdian
-    );
+    output.setUint32(offset, channelCount * sampleRate * (sampleBits / 8), this.littleEdian);
     offset += 4;
     /* block align (channel count * bytes per sample) */
     output.setUint16(offset, channelCount * (sampleBits / 8), this.littleEdian);
@@ -281,7 +259,7 @@ export default class Recorder {
     output.setUint16(offset, sampleBits, this.littleEdian);
     offset += 2;
     /* data chunk identifier */
-    writeString(output, offset, "data");
+    writeString(output, offset, 'data');
     offset += 4;
     /* data chunk length */
     output.setUint32(offset, input.byteLength, this.littleEdian);
@@ -293,18 +271,16 @@ export default class Recorder {
     return output;
   }
 
-  static initUserMedia(): any {
+  private static initUserMedia(): any {
     if (navigator.mediaDevices === undefined) {
       navigator.mediaDevices = {};
     }
     if (navigator.mediaDevices.getUserMedia === undefined) {
       navigator.mediaDevices.getUserMedia = (constraints: any) => {
         const getUserMedia =
-          navigator.getUserMedia ||
-          navigator.webkitGetUserMedia ||
-          navigator.mozGetUserMedia;
+          navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
         if (!getUserMedia) {
-          return Promise.reject(new Error("Browser is not supported."));
+          return Promise.reject(new Error('Browser is not supported.'));
         }
         return new Promise((resolve: any, reject: any) => {
           getUserMedia.call(navigator, constraints, resolve, reject);
@@ -313,13 +289,11 @@ export default class Recorder {
     }
   }
 
-  static async getPermission(): Promise<{}> {
+  public static async getPermission(): Promise<{}> {
     Recorder.initUserMedia();
-    return navigator.mediaDevices
-      .getUserMedia({ audio: true })
-      .then((stream: any) => {
-        stream.getTracks().forEach((track: any) => track.stop());
-      });
+    return navigator.mediaDevices.getUserMedia({ audio: true }).then((stream: any) => {
+      stream.getTracks().forEach((track: any) => track.stop());
+    });
   }
 }
 

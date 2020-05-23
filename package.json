@@ -1,8 +1,12 @@
 {
   "name": "yareco",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "lightweight API wrapper for web audio recording",
-  "main": "./src/recorder.ts",
+  "main": "dist/recorder.js",
+  "types": "dist/recorder.d.ts",
+  "files": [
+    "dist"
+  ],
   "dependencies": {},
   "devDependencies": {
     "prettier": "^2.0.5",
@@ -11,8 +15,10 @@
     "typescript": "^3.9.3"
   },
   "scripts": {
-    "format": "tslint -p . --fix && prettier --write .",
-    "tslint": "tslint -p . -c ./tslint.json"
+    "build": "tsc",
+    "format": "tslint -t verbose \"src/**/*.{ts,tsx}\" --fix && prettier --write src",
+    "prepublish": "tsc",
+    "tslint": "tslint -t verbose \"src/**/*.{ts,tsx}\""
   },
   "keywords": [
     "web",
