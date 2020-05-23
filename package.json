@@ -1,0 +1,34 @@
+{
+  "name": "yareco",
+  "version": "0.1.0",
+  "description": "lightweight API wrapper for web audio recording",
+  "main": "./src/recorder.ts",
+  "dependencies": {},
+  "devDependencies": {
+    "prettier": "^2.0.5",
+    "tslint": "^6.1.2",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.9.3"
+  },
+  "scripts": {
+    "format": "tslint -p . --fix && prettier --write .",
+    "tslint": "tslint -p . -c ./tslint.json"
+  },
+  "keywords": [
+    "web",
+    "audio",
+    "recorder",
+    "typescript",
+    "javascript"
+  ],
+  "author": "jiayushe",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jiayushe/yarec.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jiayushe/yarec/issues"
+  },
+  "homepage": "https://github.com/jiayushe/yarec"
+}
