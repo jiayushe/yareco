@@ -1,6 +1,7 @@
 # Yareco
 
 [![License](https://img.shields.io/github/license/jiayushe/yareco)](https://github.com/jiayushe/yareco/blob/master/LICENSE)
+![npm](https://img.shields.io/npm/v/yareco.svg)
 
 ## Introduction
 
