@@ -1,6 +1,6 @@
 {
   "name": "yareco",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "lightweight API wrapper for web audio recording",
   "main": "dist/recorder.js",
   "types": "dist/recorder.d.ts",

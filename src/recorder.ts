@@ -11,7 +11,7 @@ export default class Recorder {
   private outputSampleRate: number;
   private outputSampleBits: number;
   private duration: number;
-  private littleEdian: boolean = true;
+  private littleEdian: boolean;
   public onRecord: (duration: number) => void;
 
   public constructor(config: UserConfig = {}) {
