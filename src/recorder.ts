@@ -66,7 +66,7 @@ export default class Recorder {
       for (let i = 0; i < length; i++) {
         const curLength = this.buffer[0].data[i].length;
         const endPos = startPos + curLength;
-        if (endPos <= targetPos) {
+        if (targetPos <= endPos) {
           const curPos = targetPos - startPos;
           if (curPos < curLength) {
             for (let chan = 0; chan < this.numChannels; chan += 1) {
@@ -78,6 +78,7 @@ export default class Recorder {
             this.buffer[chan].size = targetPos;
           }
           this.duration = targetPos / this.inputSampleRate;
+          break;
         }
         startPos = endPos;
       }
