@@ -41,7 +41,7 @@ export default class Recorder {
 
   public async start(): Promise<{}> {
     this.initRecorder();
-    return navigator.mediaDevices
+    return await navigator.mediaDevices
       .getUserMedia({ audio: true })
       .then((stream: any) => {
         this.stream = stream;
@@ -293,7 +293,7 @@ export default class Recorder {
 
   public static async getPermission(): Promise<{}> {
     Recorder.initUserMedia();
-    return navigator.mediaDevices.getUserMedia({ audio: true }).then((stream: any) => {
+    return await navigator.mediaDevices.getUserMedia({ audio: true }).then((stream: any) => {
       stream.getTracks().forEach((track: any) => track.stop());
     });
   }
