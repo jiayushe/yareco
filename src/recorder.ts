@@ -148,7 +148,7 @@ export default class Recorder {
     if (this.context && this.context.close && this.context.state !== 'closed') {
       return this.context.close();
     } else {
-      return new Promise((resolve: () => any) => {
+      return new Promise((resolve: any) => {
         resolve();
       });
     }
